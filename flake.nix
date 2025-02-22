@@ -28,9 +28,11 @@
         nativeBuildInputs = with pkgs;
           [
             pkgsStable.nodejs_22
+            nodejs
             git
             deno
             watchman
+            docker
           ]
           ++ lib.optionals stdenv.isDarwin [
             xcodes
@@ -50,6 +52,8 @@
             export PATH="${pkgs.git}/bin:$PATH"
             export PATH="${pkgs.deno}/bin:$PATH"
             export PATH="${pkgs.watchman}/bin:$PATH"
+            export PATH="${pkgs.docker}/bin:$PATH"
+            export PATH="${pkgs.nodejs}/bin:$PATH"
             
             XCODE_VERSION_OLD="15.3"
             XCODE_VERSION="16.2"
