@@ -77,10 +77,10 @@ const Login: React.FC = () => {
             Login
           </Button>
         </Form.Item>
+        <Button type="link" htmlType="submit" className="register-button" onClick={() => router.push("/register")}>
+          You are not registered yet? Register here!
+        </Button>
       </Form>
-      <Button type="link" htmlType="submit" className="register-button">
-        You are not registered yet? Register here!
-      </Button>
     </div>
   );
 };
