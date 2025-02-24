@@ -13,7 +13,7 @@ interface FormFieldProps {
   value: string;
 }
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
   const router = useRouter();
   const apiService = useApi();
   const [form] = Form.useForm();
@@ -41,15 +41,15 @@ const Login: React.FC = () => {
       router.push("/users");
     } catch (error) {
       if (error instanceof Error) {
-        alert(`Something went wrong during the login:\n${error.message}`);
+        alert(`Something went wrong during the registration:\n${error.message}`);
       } else {
-        console.error("An unknown error occurred during login.");
+        console.error("An unknown error occurred during registration.");
       }
     }
   };
 
   return (
-    <div className="login-container" style={{display: "flex", flexDirection: "column"}}>
+    <div className="login-container">
       <Form
         form={form}
         name="login"
@@ -72,17 +72,20 @@ const Login: React.FC = () => {
         >
           <Input placeholder="Enter password" type="password"/>
         </Form.Item>
+        <Form.Item
+          name="birthdate"
+          label="Birthdate"
+        >
+          <Input placeholder="Enter birthdate (optional)" type="date"/>
+        </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" className="login-button">
             Login
           </Button>
         </Form.Item>
       </Form>
-      <Button type="link" htmlType="submit" className="register-button">
-        You are not registered yet? Register here!
-      </Button>
     </div>
   );
 };
 
-export default Login;
+export default Register;
