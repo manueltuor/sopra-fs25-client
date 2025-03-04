@@ -9,36 +9,23 @@ import { Button, Form, Input } from "antd";
 // import styles from "@/styles/page.module.css";
 
 interface FormFieldProps {
-  label: string;
-  value: string;
+  name: string;
+  username: string;
+  password: string;
 }
 
 const Register: React.FC = () => {
   const router = useRouter();
   const apiService = useApi();
   const [form] = Form.useForm();
-  // useLocalStorage hook example use
-  // The hook returns an object with the value and two functions
-  // Simply choose what you need from the hook:
-  const {
-    // value: token, // is commented out because we do not need the token value
-    set: setToken, // we need this method to set the value of the token to the one we receive from the POST request to the backend server API
-    // clear: clearToken, // is commented out because we do not need to clear the token when logging in
-  } = useLocalStorage<string>("token", ""); // note that the key we are selecting is "token" and the default value we are setting is an empty string
-  // if you want to pick a different token, i.e "usertoken", the line above would look as follows: } = useLocalStorage<string>("usertoken", "");
-
-  const handleLogin = async (values: FormFieldProps) => {
+  
+  const handleRegister = async (values: FormFieldProps) => {
     try {
       // Call the API service and let it handle JSON serialization and error handling
       const response = await apiService.post<User>("/users", values);
 
-      // Use the useLocalStorage hook that returned a setter function (setToken in line 41) to store the token if available
-      if (response.token) {
-        setToken(response.token);
-      }
-
-      // Navigate to the user overview
-      router.push("/users");
+      // Navigate to the login page
+      router.push("/login");
     } catch (error) {
       if (error instanceof Error) {
         alert(`Something went wrong during the registration:\n${error.message}`);
@@ -55,7 +42,7 @@ const Register: React.FC = () => {
         name="login"
         size="large"
         variant="outlined"
-        onFinish={handleLogin}
+        onFinish={handleRegister}
         layout="vertical"
       >
         <Form.Item
@@ -64,6 +51,13 @@ const Register: React.FC = () => {
           rules={[{ required: true, message: "Please input your username!" }]}
         >
           <Input placeholder="Enter username" />
+        </Form.Item>
+        <Form.Item
+          name="name"
+          label="Name"
+          rules={[{ required: true, message: "Please input your name!" }]}
+        >
+          <Input placeholder="Enter name" />
         </Form.Item>
         <Form.Item
           name="password"
@@ -84,7 +78,7 @@ const Register: React.FC = () => {
           </Button>
         </Form.Item>
         <Button type="link" htmlType="submit" className="register-button" onClick={() => router.push("/login")}>
-          Already registered? Register here!
+          Already registered? Login here!
         </Button>
       </Form>
     </div>
