@@ -12,6 +12,7 @@ interface FormFieldProps {
   name: string;
   username: string;
   password: string;
+  birthday: string;
 }
 
 const Register: React.FC = () => {
@@ -67,10 +68,10 @@ const Register: React.FC = () => {
           <Input placeholder="Enter password" type="password"/>
         </Form.Item>
         <Form.Item
-          name="birthdate"
-          label="Birthdate"
+          name="birthday"
+          label="Birthday"
         >
-          <Input placeholder="Enter birthdate (optional)" type="date"/>
+          <Input placeholder="Enter birthday (optional)" type="date"/>
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" className="login-button">

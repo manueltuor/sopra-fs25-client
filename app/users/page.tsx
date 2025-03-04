@@ -25,6 +25,21 @@ const columns: TableProps<User>["columns"] = [
     key: "name",
   },
   {
+    title: "Birthday",
+    dataIndex: "birthday",
+    key: "birthday",
+  },
+  {
+    title: "Created",
+    dataIndex: "date",
+    key: "date",
+  },
+  {
+    title: "Status",
+    dataIndex: "status",
+    key: "status",
+  },
+  {
     title: "Id",
     dataIndex: "id",
     key: "id",
