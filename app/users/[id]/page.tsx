@@ -1,15 +1,89 @@
-// your code here for S2 to display a single user profile after having clicked on it
-// each user has their own slug /[id] (/1, /2, /3, ...) and is displayed using this file
-// try to leverage the component library from antd by utilizing "Card" to display the individual user
-// import { Card } from "antd"; // similar to /app/users/page.tsx
+"use client"; // For components that need React hooks and browser APIs, SSR (server side rendering) has to be disabled. Read more here: https://nextjs.org/docs/pages/building-your-application/rendering/server-side-rendering
 
-const UserPage = () => {
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useApi } from "@/hooks/useApi";
+import useLocalStorage from "@/hooks/useLocalStorage";
+import { getApiDomain } from "@/utils/domain";
+//import { User } from "@/types/user";
+import { Button, Card, Table } from "antd";
+import type { TableProps } from "antd"; // antd component library allows imports of types
+// Optionally, you can import a CSS module or file for additional styling:
+// import "@/styles/views/Dashboard.scss";
+
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  status: string;
+  date: string;
+  birthday?: string;
+}
+
+const Dashboard: React.FC = () => {
+  const router = useRouter();
+  const apiService = useApi();
+  const [user, setUser] = useState<User | null | undefined>(undefined);
+
+  const params = useParams();
+  const id = params?.id as string;
+  // useLocalStorage hook example use
+  // The hook returns an object with the value and two functions
+  // Simply choose what you need from the hook:
+  const {
+    // value: token, // is commented out because we dont need to know the token value for logout
+    // set: setToken, // is commented out because we dont need to set or update the token value
+    clear: clearToken, // all we need in this scenario is a method to clear the token
+  } = useLocalStorage<string>("token", ""); // if you wanted to select a different token, i.e "lobby", useLocalStorage<string>("lobby", "");
+
+  const handleLogout = (): void => {
+    // Clear token using the returned function 'clear' from the hook
+    clearToken();
+    router.push("/login");
+  };
+  console.log(id)
+  useEffect(() => {
+    if (id) {
+      const apiUrl = `${getApiDomain()}/users/${id}`;
+      console.log("Fetching from:", apiUrl); // Debugging output
+  
+      fetch(apiUrl, {
+        headers: { "Content-Type": "application/json" },
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error("User not found");
+          return response.json();
+        })
+        .then((data) => setUser(data))
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
+    }
+  }, [id, router, apiService]);
+   // dependency apiService does not re-trigger the useEffect on every render because the hook uses memoization (check useApi.tsx in the hooks).
+  // if the dependency array is left empty, the useEffect will trigger exactly once
+  // if the dependency array is left away, the useEffect will run on every state change. Since we do a state change to users in the useEffect, this results in an infinite loop.
+  // read more here: https://react.dev/reference/react/useEffect#specifying-reactive-dependencies
+
+  if (user === undefined) return <div>Loading...</div>;
+  if (user === null) return <div>User not found.</div>;
+
   return (
-    <div>
-      <h1>User Profile</h1>
-      <p>Showing details for user ID: </p>
+    <div className="card-container">
+      <Card
+        title="Profile:"
+        loading={!user}
+        className="dashboard-container"
+      >
+        <p><strong>Name:</strong> {user.name}</p>
+        <p><strong>Username:</strong> {user.username}</p>
+        <p><strong>Status:</strong> {user.status}</p>
+        <p><strong>Created:</strong> {user.date}</p>
+        {user.birthday && <p><strong>Birthday:</strong> {user.birthday}</p>}
+      </Card>
     </div>
   );
 };
 
-export default UserPage;
+export default Dashboard;
