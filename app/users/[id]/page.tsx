@@ -7,7 +7,7 @@ import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { getApiDomain } from "@/utils/domain";
 //import { User } from "@/types/user";
-import { Button, Card, Table } from "antd";
+import { Button, Card, Table, Spin } from "antd";
 import type { TableProps } from "antd"; // antd component library allows imports of types
 // Optionally, you can import a CSS module or file for additional styling:
 // import "@/styles/views/Dashboard.scss";
@@ -18,6 +18,7 @@ interface User {
   username: string;
   status: string;
   date: string;
+  token: string;
   birthday?: string;
 }
 
@@ -25,6 +26,7 @@ const Dashboard: React.FC = () => {
   const router = useRouter();
   const apiService = useApi();
   const [user, setUser] = useState<User | null | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
 
   const params = useParams();
   const id = params?.id as string;
@@ -44,6 +46,14 @@ const Dashboard: React.FC = () => {
   };
   console.log(id)
   useEffect(() => {
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
     if (id) {
       const apiUrl = `${getApiDomain()}/users/${id}`;
       console.log("Fetching from:", apiUrl); // Debugging output
@@ -58,7 +68,10 @@ const Dashboard: React.FC = () => {
         .then((data) => setUser(data))
         .catch((error) => {
           console.error("Error fetching user data:", error);
-        });
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
     }
   }, [id, router, apiService]);
    // dependency apiService does not re-trigger the useEffect on every render because the hook uses memoization (check useApi.tsx in the hooks).
@@ -66,8 +79,20 @@ const Dashboard: React.FC = () => {
   // if the dependency array is left away, the useEffect will run on every state change. Since we do a state change to users in the useEffect, this results in an infinite loop.
   // read more here: https://react.dev/reference/react/useEffect#specifying-reactive-dependencies
 
+  if (loading) {
+    return (
+      <div className="login-container">
+          <h1>loading...</h1>
+      </div>
+    );
+  }
+
   if (user === undefined) return <div>Loading...</div>;
   if (user === null) return <div>User not found.</div>;
+
+  const localToken = localStorage.getItem("token")?.trim().replace(/^"|"$/g, "");
+  const userToken = user?.token?.trim().toString();
+  const isEdit = localToken === userToken;
 
   return (
     <div className="card-container">
@@ -81,6 +106,14 @@ const Dashboard: React.FC = () => {
         <p><strong>Status:</strong> {user.status}</p>
         <p><strong>Created:</strong> {user.date}</p>
         {user.birthday && <p><strong>Birthday:</strong> {user.birthday}</p>}
+        <Button onClick={() => router.push("/users")} type="primary">
+          Back
+        </Button>
+        {isEdit && (
+          <Button type="primary" htmlType="submit" onClick={() => router.push(`/users/${id}/edit`)}>
+            Edit
+          </Button>
+        )}
       </Card>
     </div>
   );

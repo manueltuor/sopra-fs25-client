@@ -5,6 +5,7 @@ import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { User } from "@/types/user";
 import { Button, Form, Input } from "antd";
+import { useEffect } from "react";
 // Optionally, you can import a CSS module or file for additional styling:
 // import styles from "@/styles/page.module.css";
 
@@ -15,18 +16,42 @@ interface FormFieldProps {
   birthday: string;
 }
 
+export interface UserGetDTO {
+  id: number;
+  name: string;
+  username: string;
+  status: string;
+  date: string;
+  birthday: string;
+  token: string;
+}
+
 const Register: React.FC = () => {
   const router = useRouter();
   const apiService = useApi();
   const [form] = Form.useForm();
   
+  const { value: token, set: setToken } = useLocalStorage<string>("token", "");
+  const { value: userId, set: setUserId } = useLocalStorage<string>("userId", "");
+
+  useEffect(() => {
+    if (userId) {
+      router.push(`/users/${userId}`);
+    }
+  }, [userId, router]);
+
   const handleRegister = async (values: FormFieldProps) => {
     try {
       // Call the API service and let it handle JSON serialization and error handling
-      const response = await apiService.post<User>("/users", values);
+      const response = await apiService.post<UserGetDTO>("/users", values);
 
-      // Navigate to the login page
-      router.push("/login");
+      if (!response.token) {
+        throw new Error("Registration failed: Missing token in response.");
+      }
+
+      setToken(response.token);
+      setUserId(response.id.toString());
+      router.push(`/users/${response.id}`);
     } catch (error) {
       if (error instanceof Error) {
         alert(`Something went wrong during the registration:\n${error.message}`);

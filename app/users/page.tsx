@@ -35,23 +35,18 @@ const Dashboard: React.FC = () => {
   const router = useRouter();
   const apiService = useApi();
   const [users, setUsers] = useState<User[] | null>(null);
-  // useLocalStorage hook example use
-  // The hook returns an object with the value and two functions
-  // Simply choose what you need from the hook:
-  const {
-    // value: token, // is commented out because we dont need to know the token value for logout
-    // set: setToken, // is commented out because we dont need to set or update the token value
-    clear: clearToken, // all we need in this scenario is a method to clear the token
-  } = useLocalStorage<string>("token", ""); // if you wanted to select a different token, i.e "lobby", useLocalStorage<string>("lobby", "");
-
-  const handleLogout = (): void => {
-    // Clear token using the returned function 'clear' from the hook
-    clearToken();
-    router.push("/login");
-  };
+  
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUsers = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        router.push("/login");
+        return;
+      }
+
       try {
         // apiService.get<User[]> returns the parsed JSON object directly,
         // thus we can simply assign it to our users variable.
@@ -64,6 +59,8 @@ const Dashboard: React.FC = () => {
         } else {
           console.error("An unknown error occurred while fetching users.");
         }
+      } finally {
+        setLoading(false); 
       }
     };
 
@@ -73,11 +70,25 @@ const Dashboard: React.FC = () => {
   // if the dependency array is left away, the useEffect will run on every state change. Since we do a state change to users in the useEffect, this results in an infinite loop.
   // read more here: https://react.dev/reference/react/useEffect#specifying-reactive-dependencies
 
+  const handleLogout = (): void => { 
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    router.push("/login");
+  };
+
+  if (loading) {
+    return (
+      <div className="login-container">
+          <h1>loading...</h1>
+      </div>
+    );
+  }
+
   return (
     <div className="card-container">
       <Card
         title="Get all users from secure endpoint:"
-        loading={!users}
+        loading={loading}
         className="dashboard-container"
       >
         {users && (
