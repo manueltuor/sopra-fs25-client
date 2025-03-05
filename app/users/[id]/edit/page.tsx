@@ -48,6 +48,10 @@ const EditProfile = () => {
             return response.json();
           })
           .then((data) => {
+            if (token.trim().replace(/^"|"$/g, "") !== data.token) {
+                router.push("/login")
+                return;
+            }
             setUser(data);
             form.setFieldsValue({
               username: data.username,

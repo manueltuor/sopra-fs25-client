@@ -22,14 +22,18 @@ interface User {
   birthday?: string;
 }
 
+interface Params {
+  id: string;
+}
+
 const Dashboard: React.FC = () => {
   const router = useRouter();
   const apiService = useApi();
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
-  const params = useParams();
-  const id = params?.id as string;
+  const params = useParams() as unknown as Params;
+  const id = params.id;
   // useLocalStorage hook example use
   // The hook returns an object with the value and two functions
   // Simply choose what you need from the hook:

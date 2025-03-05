@@ -59,13 +59,13 @@ const Login: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="login-container">
-          <h1>loading...</h1>
-      </div>
-    );
-  }
+  //if (loading) {
+  //  return (
+  //    <div className="login-container">
+  //        <h1>loading...</h1>
+  //    </div>
+  //  );
+  //}
 
   return (
     <div className="login-container" style={{display: "flex", flexDirection: "column"}}>
