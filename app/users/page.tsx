@@ -13,7 +13,6 @@ import { error } from "console";
 // Optionally, you can import a CSS module or file for additional styling:
 // import "@/styles/views/Dashboard.scss";
 
-// Columns for the antd table of User objects
 const columns: TableProps<User>["columns"] = [
   {
     title: "Username",
