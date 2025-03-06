@@ -33,8 +33,6 @@ const Dashboard: React.FC = () => {
   const router = useRouter();
   const apiService = useApi();
   const [users, setUsers] = useState<User[] | null>(null);
-  
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -58,8 +56,6 @@ const Dashboard: React.FC = () => {
         } else {
           console.error("An unknown error occurred while fetching users.");
         }
-      } finally {
-        setLoading(false); 
       }
     };
 
@@ -69,10 +65,9 @@ const Dashboard: React.FC = () => {
   // if the dependency array is left away, the useEffect will run on every state change. Since we do a state change to users in the useEffect, this results in an infinite loop.
   // read more here: https://react.dev/reference/react/useEffect#specifying-reactive-dependencies
 
-  const handleLogout = async (): Promise<void> => { 
+  const handleLoggingOut = async (): Promise<void> => { 
     const id = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
-  
     if (!id || !token) {
       alert("User ID or token not found. Please log in again.");
       router.push("/login");
@@ -87,12 +82,9 @@ const Dashboard: React.FC = () => {
         id: parseInt(id), 
         token: token.trim().replace(/^"|"$/g, ""),
       });
-      
       console.log(response)
-  
       localStorage.removeItem("token");
       localStorage.removeItem("userId");
-  
       router.push("/login");
   
     } catch (error) {
@@ -105,7 +97,6 @@ const Dashboard: React.FC = () => {
     <div className="card-container">
       <Card
         title="Get all users from secure endpoint:"
-        loading={loading}
         className="dashboard-container"
       >
         {users && (
@@ -115,14 +106,9 @@ const Dashboard: React.FC = () => {
               columns={columns}
               dataSource={users}
               rowKey="id"
-              onRow={(row) => ({
-                onClick: () => router.push(`/users/${row.id}`),
-                style: { cursor: "pointer" },
-              })}
+              onRow={(row) => ({onClick: () => router.push(`/users/${row.id}`), style: { cursor: "pointer" }})}
             />
-            <Button onClick={handleLogout} type="primary">
-              Logout
-            </Button>
+            <Button onClick={handleLoggingOut} type="primary">Logout</Button>
           </>
         )}
       </Card>

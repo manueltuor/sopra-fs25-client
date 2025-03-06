@@ -7,10 +7,7 @@ export class ApiService {
 
   constructor() {
     this.baseURL = getApiDomain();
-    this.defaultHeaders = {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    };
+    this.defaultHeaders = {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"};
   }
 
   /**
@@ -42,11 +39,7 @@ export class ApiService {
       const error: ApplicationError = new Error(
         detailedMessage,
       ) as ApplicationError;
-      error.info = JSON.stringify(
-        { status: res.status, statusText: res.statusText },
-        null,
-        2,
-      );
+      error.info = JSON.stringify({ status: res.status, statusText: res.statusText }, null, 2);
       error.status = res.status;
       throw error;
     }
@@ -62,33 +55,10 @@ export class ApiService {
    */
   public async get<T>(endpoint: string, options?:RequestInit): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-    const res = await fetch(url, {
-      method: "GET",
-      headers: {...this.defaultHeaders, ...(options?.headers || {})},
-      ...options,
-    });
+    const res = await fetch(url, {method: "GET", headers: {...this.defaultHeaders, ...(options?.headers || {})}, ...options});
     return this.processResponse<T>(
       res,
       "An error occurred while fetching the data.\n",
-    );
-  }
-
-  /**
-   * POST request.
-   * @param endpoint - The API endpoint (e.g. "/users").
-   * @param data - The payload to post.
-   * @returns JSON data of type T.
-   */
-  public async post<T>(endpoint: string, data: unknown): Promise<T> {
-    const url = `${this.baseURL}${endpoint}`;
-    const res = await fetch(url, {
-      method: "POST",
-      headers: this.defaultHeaders,
-      body: JSON.stringify(data),
-    });
-    return this.processResponse<T>(
-      res,
-      "An error occurred while posting the data.\n",
     );
   }
 
@@ -100,11 +70,7 @@ export class ApiService {
    */
   public async put<T>(endpoint: string, data: unknown): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-    const res = await fetch(url, {
-      method: "PUT",
-      headers: this.defaultHeaders,
-      body: JSON.stringify(data),
-    });
+    const res = await fetch(url, {method: "PUT", headers: this.defaultHeaders, body: JSON.stringify(data)});
     return this.processResponse<T>(
       res,
       "An error occurred while updating the data.\n",
@@ -118,13 +84,25 @@ export class ApiService {
    */
   public async delete<T>(endpoint: string): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-    const res = await fetch(url, {
-      method: "DELETE",
-      headers: this.defaultHeaders,
-    });
+    const res = await fetch(url, {method: "DELETE", headers: this.defaultHeaders});
     return this.processResponse<T>(
       res,
       "An error occurred while deleting the data.\n",
+    );
+  }
+
+  /**
+   * POST request.
+   * @param endpoint - The API endpoint (e.g. "/users").
+   * @param data - The payload to post.
+   * @returns JSON data of type T.
+   */
+  public async post<T>(endpoint: string, data: unknown): Promise<T> {
+    const url = `${this.baseURL}${endpoint}`;
+    const res = await fetch(url, {method: "POST", headers: this.defaultHeaders, body: JSON.stringify(data)});
+    return this.processResponse<T>(
+      res,
+      "An error occurred while posting the data.\n",
     );
   }
 }
