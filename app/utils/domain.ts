@@ -9,6 +9,6 @@
 
 export function getApiDomain(): string {
   const prodUrl = "https://sopra-fs25-tuor-manuel-server.oa.r.appspot.com"
-  //const devUrl = "http://localhost:8080";
-  return prodUrl;
+  const devUrl = "http://localhost:8080";
+  return devUrl;
 }

@@ -39,15 +39,12 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       const token = localStorage.getItem("token");
-
       if (!token) {
         router.push("/login");
         return;
       }
 
       try {
-        // apiService.get<User[]> returns the parsed JSON object directly,
-        // thus we can simply assign it to our users variable.
         const users: User[] = await apiService.get<User[]>("/users", {
           headers: {
             Authorization: token.trim().replace(/^"|"$/g, ""),
@@ -85,7 +82,6 @@ const Dashboard: React.FC = () => {
     console.log("ID: ", parseInt(id), typeof(parseInt(id)));
     console.log("TOKEN: ", token, typeof(token));
  
-
     try {
       const response = await apiService.put("/users/logout", { 
         id: parseInt(id), 

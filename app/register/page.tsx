@@ -39,7 +39,7 @@ const Register: React.FC = () => {
     }
   }, [userId, router]);
 
-  const handleRegister = async (values: FormFieldProps) => {
+  const handleRegistration = async (values: FormFieldProps) => {
     try {
       // Call the API service and let it handle JSON serialization and error handling
       const response = await apiService.post<UserGetDTO>("/users", values);
@@ -67,7 +67,7 @@ const Register: React.FC = () => {
         name="login"
         size="large"
         variant="outlined"
-        onFinish={handleRegister}
+        onFinish={handleRegistration}
         layout="vertical"
       >
         <Form.Item
@@ -92,13 +92,9 @@ const Register: React.FC = () => {
           <Input placeholder="Enter password" type="password"/>
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" className="login-button">
-            Register
-          </Button>
+          <Button type="primary" htmlType="submit" className="login-button">Register</Button>
         </Form.Item>
-        <Button type="link" htmlType="submit" className="register-button" onClick={() => router.push("/login")}>
-          Already registered? Login here!
-        </Button>
+        <Button type="link" htmlType="submit" className="register-button" onClick={() => router.push("/login")}>Already registered? Login here!</Button>
       </Form>
     </div>
   );

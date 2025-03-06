@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
-//import { User } from "@/types/user";
 import { Button, Card } from "antd";
 // Optionally, you can import a CSS module or file for additional styling:
 // import "@/styles/views/Dashboard.scss";
@@ -19,7 +18,6 @@ interface User {
   token: string;
   birthday?: string;
 }
-
 interface Params {
   id: string;
 }
@@ -29,7 +27,6 @@ const Dashboard: React.FC = () => {
   const apiService = useApi();
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [, setLoading] = useState(true);
-
   const params = useParams() as unknown as Params;
   const id = params.id;
   // useLocalStorage hook example use
@@ -43,14 +40,11 @@ const Dashboard: React.FC = () => {
 
   console.log(id)
   useEffect(() => {
-
     const token = localStorage.getItem("token");
-
     if (!token) {
       router.push("/login");
       return;
     }
-
     if (id) {
       apiService
         .get<User>(`/users/${id}`, {
@@ -76,23 +70,15 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="card-container">
-      <Card
-        title="Profile:"
-        loading={!user}
-        className="dashboard-container"
-      >
+      <Card title="Profile:" loading={!user} className="dashboard-container">
         <p><strong>Name:</strong> {user.name}</p>
         <p><strong>Username:</strong> {user.username}</p>
         <p><strong>Status:</strong> {user.status}</p>
         <p><strong>Created:</strong> {user.date}</p>
         {user.birthday && <p><strong>Birthday:</strong> {user.birthday}</p>}
-        <Button onClick={() => router.push("/users")} type="primary">
-          Back
-        </Button>
+        <Button onClick={() => router.push("/users")} type="primary">Back</Button>
         {isEdit && (
-          <Button type="primary" htmlType="submit" onClick={() => router.push(`/users/${id}/edit`)}>
-            Edit
-          </Button>
+          <Button type="primary" htmlType="submit" onClick={() => router.push(`/users/${id}/edit`)}>Edit</Button>
         )}
       </Card>
     </div>

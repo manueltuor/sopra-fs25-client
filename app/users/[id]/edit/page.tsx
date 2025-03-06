@@ -12,7 +12,6 @@ interface FormFieldProps {
   username: string;
   birthday?: string;
 }
-
 interface User {
   id: number;
   name: string;
@@ -71,8 +70,7 @@ const EditProfile = () => {
 
   const handleEdit = async (values: FormFieldProps) => { 
     const updatedData = {
-        ...values,
-        birthday: values.birthday ? dayjs(values.birthday).format("YYYY-MM-DD") : null,
+        ...values, birthday: values.birthday ? dayjs(values.birthday).format("YYYY-MM-DD") : null,
     };
 
     console.log("Updated values:", updatedData);
@@ -80,45 +78,41 @@ const EditProfile = () => {
 
     try {
         const response = await fetch(`${getApiDomain()}/users/${id}`, {
-            method: "PUT",
-            headers: { 
-                "Content-Type": "application/json",
-                Authorization: user.token.trim().replace(/^"|"$/g, "")
-            },
+            method: "PUT", headers: {"Content-Type": "application/json", Authorization: user.token.trim().replace(/^"|"$/g, "")},
             body: JSON.stringify(updatedData),
         });
 
+        // Update works, no content
         if (response.status === 204) {
-            // Successful update with no content
             alert("Profile updated successfully!");
             router.push(`/users/${id}`);
             return;
         } 
 
-        // Handle other responses
+
         const contentType = response.headers.get("content-type");
+        // Other responses
         if (contentType && contentType.includes("application/json")) {
             const data = await response.json();
             if (data.message) {
                 throw new Error(data.message);
             } else {
-                throw new Error("Failed to update profile");
+                throw new Error("Could not update profile");
             }
         } else {
             throw new Error("Unexpected response from server");
         }
     } catch (error) {
         if (error instanceof Error) {
-            alert(error.message || "An unexpected error occurred while updating the profile.");
+            alert(error.message || "Unexpected error occurred while trying to update profile.");
         } else {
-            alert("An unexpected error occurred while updating the profile.");
+            alert("Unexpected error occurred while trying to update profile.");
         }
     } finally {
         setSubmitting(false);
     }
 };
   
-
   return (
     <div>
       <div className="login-container">

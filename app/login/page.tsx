@@ -18,9 +18,6 @@ const Login: React.FC = () => {
   const router = useRouter();
   const apiService = useApi();
   const [form] = Form.useForm();
-  // useLocalStorage hook example use
-  // The hook returns an object with the value and two functions
-  // Simply choose what you need from the hook:
   
   const { set: setToken } = useLocalStorage<string>("token", "");
   const { value: userId, set: setUserId } = useLocalStorage<number>("userId", 0);
@@ -33,22 +30,17 @@ const Login: React.FC = () => {
 
   const handleLogin = async (values: FormFieldProps) => {
     try {
-      // Call the API service and let it handle JSON serialization and error handling
       const response = await apiService.post<User>("/login/auth", values);
-      
       console.log("USER: ", response);
 
       // Use the useLocalStorage hook that returned a setter function (setToken in line 41) to store the token if available
       if (response.token) {
         setToken(response.token);
       }
-
       if (response.id) {
         setUserId(parseInt(response.id));
       }
-  
-
-      // Navigate to the user overview
+      // Go to users page
       router.push("/users");
     } catch (error) {
       if (error instanceof Error) {
@@ -76,17 +68,13 @@ const Login: React.FC = () => {
         >
           <Input placeholder="Enter username" />
         </Form.Item>
-        <Form.Item
-          name="password"
-          label="Password"
+        <Form.Item name="password" label="Password"
           rules={[{ required: true, message: "Please input your password!" }]}
         >
           <Input placeholder="Enter password" type="password"/>
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" className="login-button">
-            Login
-          </Button>
+          <Button type="primary" htmlType="submit" className="login-button">Login</Button>
         </Form.Item>
         <Button type="link" htmlType="submit" className="register-button" onClick={() => router.push("/register")}>
           You are not registered yet? Register here!
