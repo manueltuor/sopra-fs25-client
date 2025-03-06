@@ -5,10 +5,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { getApiDomain } from "@/utils/domain";
 //import { User } from "@/types/user";
-import { Button, Card, Table, Spin } from "antd";
-import type { TableProps } from "antd"; // antd component library allows imports of types
+import { Button, Card } from "antd";
 // Optionally, you can import a CSS module or file for additional styling:
 // import "@/styles/views/Dashboard.scss";
 
@@ -30,7 +28,7 @@ const Dashboard: React.FC = () => {
   const router = useRouter();
   const apiService = useApi();
   const [user, setUser] = useState<User | null | undefined>(undefined);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   const params = useParams() as unknown as Params;
   const id = params.id;
@@ -40,14 +38,9 @@ const Dashboard: React.FC = () => {
   const {
     // value: token, // is commented out because we dont need to know the token value for logout
     // set: setToken, // is commented out because we dont need to set or update the token value
-    clear: clearToken, // all we need in this scenario is a method to clear the token
+    // all we need in this scenario is a method to clear the token
   } = useLocalStorage<string>("token", ""); // if you wanted to select a different token, i.e "lobby", useLocalStorage<string>("lobby", "");
 
-  const handleLogout = (): void => {
-    // Clear token using the returned function 'clear' from the hook
-    clearToken();
-    router.push("/login");
-  };
   console.log(id)
   useEffect(() => {
 

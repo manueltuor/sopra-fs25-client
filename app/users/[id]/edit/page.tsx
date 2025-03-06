@@ -2,7 +2,7 @@
 
 import { useRouter, useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Spin, Card } from "antd";
+import { Button, Form, Input, Card } from "antd";
 import { getApiDomain } from "@/utils/domain";
 import styles from "@/styles/page.module.css";
 import dayjs from "dayjs";
@@ -30,8 +30,8 @@ const EditProfile = () => {
   const apiService = useApi();
   
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
+  const [, setLoading] = useState(true);
+  const [, setSubmitting] = useState(false);
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -107,8 +107,12 @@ const EditProfile = () => {
         } else {
             throw new Error("Unexpected response from server");
         }
-    } catch (error: any) {
-        alert(error.message || "An unexpected error occurred while updating the profile.");
+    } catch (error) {
+        if (error instanceof Error) {
+            alert(error.message || "An unexpected error occurred while updating the profile.");
+        } else {
+            alert("An unexpected error occurred while updating the profile.");
+        }
     } finally {
         setSubmitting(false);
     }

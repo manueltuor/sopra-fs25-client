@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation"; // use NextJS router for navigation
 import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { User } from "@/types/user";
 import { Button, Form, Input } from "antd";
 import { useEffect } from "react";
 // Optionally, you can import a CSS module or file for additional styling:
@@ -31,8 +30,8 @@ const Register: React.FC = () => {
   const apiService = useApi();
   const [form] = Form.useForm();
   
-  const { value: token, set: setToken } = useLocalStorage<string>("token", "");
-  const { value: userId, set: setUserId } = useLocalStorage<Number>("userId", 0);
+  const { set: setToken } = useLocalStorage<string>("token", "");
+  const { value: userId, set: setUserId } = useLocalStorage<number>("userId", 0);
 
   useEffect(() => {
     if (userId) {

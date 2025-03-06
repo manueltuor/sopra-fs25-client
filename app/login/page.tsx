@@ -5,7 +5,7 @@ import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { User } from "@/types/user";
 import { Button, Form, Input } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 // Optionally, you can import a CSS module or file for additional styling:
 // import styles from "@/styles/page.module.css";
 
@@ -22,8 +22,8 @@ const Login: React.FC = () => {
   // The hook returns an object with the value and two functions
   // Simply choose what you need from the hook:
   
-  const { value: token, set: setToken } = useLocalStorage<string>("token", "");
-  const { value: userId, set: setUserId } = useLocalStorage<Number>("userId", 0);
+  const { set: setToken } = useLocalStorage<string>("token", "");
+  const { value: userId, set: setUserId } = useLocalStorage<number>("userId", 0);
 
   useEffect(() => {
     if (userId) {
@@ -44,7 +44,7 @@ const Login: React.FC = () => {
       }
 
       if (response.id) {
-        setUserId(response.id);
+        setUserId(parseInt(response.id));
       }
   
 
