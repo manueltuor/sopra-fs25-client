@@ -87,8 +87,7 @@ const Dashboard: React.FC = () => {
       localStorage.removeItem("userId");
       router.push("/login");
   
-    } catch (error) {
-      console.log("Error setting the status to OFFLINE: ", error);
+    } catch {
       alert("An error occurred while logging out");
     } 
   };

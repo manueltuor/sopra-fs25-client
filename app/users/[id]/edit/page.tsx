@@ -82,16 +82,11 @@ const EditProfile = () => {
             body: JSON.stringify(updatedData),
         });
 
-        // Update works, no content
         if (response.status === 204) {
-            alert("Profile updated successfully!");
-            router.push(`/users/${id}`);
+            router.push(`/users/${id}`); // all cool
             return;
         } 
-
-
         const contentType = response.headers.get("content-type");
-        // Other responses
         if (contentType && contentType.includes("application/json")) {
             const data = await response.json();
             if (data.message) {

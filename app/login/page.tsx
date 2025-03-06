@@ -53,13 +53,8 @@ const Login: React.FC = () => {
 
   return (
     <div className="login-container" style={{display: "flex", flexDirection: "column"}}>
-      <Form
-        form={form}
-        name="login"
-        size="large"
-        variant="outlined"
-        onFinish={handleLogin}
-        layout="vertical"
+      <Form form={form} name="login" size="large"
+        variant="outlined" onFinish={handleLogin} layout="vertical"
       >
         <Form.Item
           name="username"
