@@ -32,7 +32,7 @@ const Register: React.FC = () => {
   const [form] = Form.useForm();
   
   const { value: token, set: setToken } = useLocalStorage<string>("token", "");
-  const { value: userId, set: setUserId } = useLocalStorage<string>("userId", "");
+  const { value: userId, set: setUserId } = useLocalStorage<Number>("userId", 0);
 
   useEffect(() => {
     if (userId) {
@@ -50,7 +50,7 @@ const Register: React.FC = () => {
       }
 
       setToken(response.token);
-      setUserId(response.id.toString());
+      setUserId(response.id);
       router.push(`/users/${response.id}`);
     } catch (error) {
       if (error instanceof Error) {
@@ -91,12 +91,6 @@ const Register: React.FC = () => {
           rules={[{ required: true, message: "Please input your password!" }]}
         >
           <Input placeholder="Enter password" type="password"/>
-        </Form.Item>
-        <Form.Item
-          name="birthday"
-          label="Birthday"
-        >
-          <Input placeholder="Enter birthday (optional)" type="date"/>
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" className="login-button">

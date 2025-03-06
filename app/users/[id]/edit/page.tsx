@@ -80,43 +80,51 @@ const EditProfile = () => {
 
   if (!user) return <div>User not found.</div>;
 
-  const handleEdit = async (values: FormFieldProps) => {
+  const handleEdit = async (values: FormFieldProps) => { 
     const updatedData = {
         ...values,
         birthday: values.birthday ? dayjs(values.birthday).format("YYYY-MM-DD") : null,
     };
 
+    console.log("Updated values:", updatedData);
     setSubmitting(true);
-  
+
     try {
         const response = await fetch(`${getApiDomain()}/users/${id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedData),
+            method: "PUT",
+            headers: { 
+                "Content-Type": "application/json",
+                Authorization: user.token.trim().replace(/^"|"$/g, "")
+            },
+            body: JSON.stringify(updatedData),
         });
-  
-        const contentType = response.headers.get("content-type");
-  
-        let data;
-        if (contentType && contentType.includes("application/json")) {
-            data = await response.json();
-        } else {
-            throw new Error("Invalid response from server");
-        }
-    
-        if (response.ok && data.status === "success") {
-            alert(data.message || "Profile updated successfully!");
+
+        if (response.status === 204) {
+            // Successful update with no content
+            alert("Profile updated successfully!");
             router.push(`/users/${id}`);
+            return;
+        } 
+
+        // Handle other responses
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            const data = await response.json();
+            if (data.message) {
+                throw new Error(data.message);
+            } else {
+                throw new Error("Failed to update profile");
+            }
         } else {
-            throw new Error(data.message || "Failed to update profile");
+            throw new Error("Unexpected response from server");
         }
     } catch (error: any) {
         alert(error.message || "An unexpected error occurred while updating the profile.");
     } finally {
         setSubmitting(false);
-
     }
-  };
+};
+  
 
   return (
     <div>

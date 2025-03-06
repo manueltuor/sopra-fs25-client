@@ -9,6 +9,7 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import { User } from "@/types/user";
 import { Button, Card, Table } from "antd";
 import type { TableProps } from "antd"; // antd component library allows imports of types
+import { error } from "console";
 // Optionally, you can import a CSS module or file for additional styling:
 // import "@/styles/views/Dashboard.scss";
 
@@ -70,12 +71,38 @@ const Dashboard: React.FC = () => {
   // if the dependency array is left away, the useEffect will run on every state change. Since we do a state change to users in the useEffect, this results in an infinite loop.
   // read more here: https://react.dev/reference/react/useEffect#specifying-reactive-dependencies
 
-  const handleLogout = (): void => { 
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
-    router.push("/login");
-  };
+  const handleLogout = async (): Promise<void> => { 
+    const id = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+  
+    if (!id || !token) {
+      alert("User ID or token not found. Please log in again.");
+      router.push("/login");
+      return;
+    }
+    
+    console.log("ID: ", parseInt(id), typeof(parseInt(id)));
+    console.log("TOKEN: ", token, typeof(token));
+ 
 
+    try {
+      const response = await apiService.put("/users/logout", { 
+        id: parseInt(id), 
+        token: token.trim().replace(/^"|"$/g, ""),
+      });
+      
+  
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
+  
+      router.push("/login");
+  
+    } catch (error) {
+      console.log("Error setting the status to OFFLINE: ", error);
+      alert("An error occurred while logging out");
+    } 
+  };
+  
   if (loading) {
     return (
       <div className="login-container">

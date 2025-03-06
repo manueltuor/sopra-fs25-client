@@ -24,7 +24,7 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const { value: token, set: setToken } = useLocalStorage<string>("token", "");
-  const { value: userId, set: setUserId } = useLocalStorage<string>("userId", "");
+  const { value: userId, set: setUserId } = useLocalStorage<Number>("userId", 0);
 
   useEffect(() => {
     if (userId) {
@@ -36,6 +36,8 @@ const Login: React.FC = () => {
     try {
       // Call the API service and let it handle JSON serialization and error handling
       const response = await apiService.post<User>("/login/auth", values);
+      
+      console.log("USER: ", response);
 
       // Use the useLocalStorage hook that returned a setter function (setToken in line 41) to store the token if available
       if (response.token) {
