@@ -51,7 +51,11 @@ const Dashboard: React.FC = () => {
       try {
         // apiService.get<User[]> returns the parsed JSON object directly,
         // thus we can simply assign it to our users variable.
-        const users: User[] = await apiService.get<User[]>("/users");
+        const users: User[] = await apiService.get<User[]>("/users", {
+          headers: {
+            Authorization: token.trim().replace(/^"|"$/g, ""),
+          },
+        });
         setUsers(users);
         console.log("Fetched users:", users);
       } catch (error) {
@@ -102,14 +106,6 @@ const Dashboard: React.FC = () => {
       alert("An error occurred while logging out");
     } 
   };
-  
-  if (loading) {
-    return (
-      <div className="login-container">
-          <h1>loading...</h1>
-      </div>
-    );
-  }
 
   return (
     <div className="card-container">

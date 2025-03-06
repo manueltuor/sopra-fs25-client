@@ -21,8 +21,7 @@ const Login: React.FC = () => {
   // useLocalStorage hook example use
   // The hook returns an object with the value and two functions
   // Simply choose what you need from the hook:
-  const [loading, setLoading] = useState(false);
-
+  
   const { value: token, set: setToken } = useLocalStorage<string>("token", "");
   const { value: userId, set: setUserId } = useLocalStorage<Number>("userId", 0);
 
@@ -47,7 +46,7 @@ const Login: React.FC = () => {
       if (response.id) {
         setUserId(response.id);
       }
-      setLoading(false);
+  
 
       // Navigate to the user overview
       router.push("/users");
@@ -57,17 +56,8 @@ const Login: React.FC = () => {
       } else {
         console.error("An unknown error occurred during login.");
       }
-      setLoading(false);
     }
   };
-
-  //if (loading) {
-  //  return (
-  //    <div className="login-container">
-  //        <h1>loading...</h1>
-  //    </div>
-  //  );
-  //}
 
   return (
     <div className="login-container" style={{display: "flex", flexDirection: "column"}}>

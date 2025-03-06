@@ -59,37 +59,20 @@ const Dashboard: React.FC = () => {
     }
 
     if (id) {
-      const apiUrl = `${getApiDomain()}/users/${id}`;
-      console.log("Fetching from:", apiUrl); // Debugging output
-  
-      fetch(apiUrl, {
-        headers: { "Content-Type": "application/json" },
-      })
-        .then((response) => {
-          if (!response.ok) throw new Error("User not found");
-          return response.json();
+      apiService
+        .get<User>(`/users/${id}`, {
+          headers: { Authorization: token.trim().replace(/^"|"$/g, "") },
         })
         .then((data) => setUser(data))
         .catch((error) => {
           console.error("Error fetching user data:", error);
+          setUser(null);
         })
         .finally(() => setLoading(false));
     } else {
       setLoading(false);
     }
   }, [id, router, apiService]);
-   // dependency apiService does not re-trigger the useEffect on every render because the hook uses memoization (check useApi.tsx in the hooks).
-  // if the dependency array is left empty, the useEffect will trigger exactly once
-  // if the dependency array is left away, the useEffect will run on every state change. Since we do a state change to users in the useEffect, this results in an infinite loop.
-  // read more here: https://react.dev/reference/react/useEffect#specifying-reactive-dependencies
-
-  if (loading) {
-    return (
-      <div className="login-container">
-          <h1>loading...</h1>
-      </div>
-    );
-  }
 
   if (user === undefined) return <div>Loading...</div>;
   if (user === null) return <div>User not found.</div>;

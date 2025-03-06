@@ -6,6 +6,7 @@ import { Button, Form, Input, Spin, Card } from "antd";
 import { getApiDomain } from "@/utils/domain";
 import styles from "@/styles/page.module.css";
 import dayjs from "dayjs";
+import { useApi } from "@/hooks/useApi";
 
 interface FormFieldProps {
   username: string;
@@ -26,7 +27,8 @@ const EditProfile = () => {
   const router = useRouter();
   const params = useParams();
   const id = params?.id as string;
-
+  const apiService = useApi();
+  
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -40,17 +42,14 @@ const EditProfile = () => {
     }
 
     if (id) {
-        fetch(`${getApiDomain()}/users/${id}`, {
-          headers: { "Content-Type": "application/json" },
-        })
-          .then((response) => {
-            if (!response.ok) throw new Error("User not found");
-            return response.json();
+        apiService
+          .get<User>(`/users/${id}`, {
+            headers: { Authorization: token.trim().replace(/^"|"$/g, "") },
           })
           .then((data) => {
             if (token.trim().replace(/^"|"$/g, "") !== data.token) {
-                router.push("/login")
-                return;
+              router.push("/login");
+              return;
             }
             setUser(data);
             form.setFieldsValue({
@@ -66,17 +65,7 @@ const EditProfile = () => {
       } else {
         setLoading(false);
       }
-    }, [id, router, form]);
-
-  if (loading) {
-    return (
-      <div className="login-container">
-        <div className={styles.loadingContainer}>
-          <Spin size="large" />
-        </div>
-      </div>
-    );
-  }
+    }, [id, router, form, apiService]);
 
   if (!user) return <div>User not found.</div>;
 
