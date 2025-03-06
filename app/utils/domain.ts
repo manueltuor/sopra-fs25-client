@@ -6,7 +6,7 @@
  * In development, it returns "http://localhost:8080".
  */
 export function getApiDomain(): string {
-  //const prodUrl = "https://sopra-fs25-tuor-manuel-server.oa.r.appspot.com"
+  const prodUrl = "https://sopra-fs25-tuor-manuel-server.oa.r.appspot.com"
   const devUrl = "http://localhost:8080";
-  return devUrl;
+  return prodUrl;
 }
